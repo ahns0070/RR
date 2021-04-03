@@ -1,2 +1,2 @@
 # RR
-What 18
+Let's start!
