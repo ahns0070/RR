@@ -164,8 +164,7 @@ factor.cov <- c(
 
 
 #missing value?? ?????? covariate?
-
-data2 <- data1[, c(conti.cov, factor.cov, "delirium", "delirium2")]
+.cov, "delirium", "delirium2")]
 head(data2)
 sum(is.na(data0$rhythm))
 
@@ -178,7 +177,7 @@ test <-  data.frame(data2[-index[,1],])
 
 names(training)
 
-delinum = grep("delirium", names(training))
+delinum = grep(elirium", names(training))
 delinum 
 
 set.seed(230)
@@ -218,18 +217,20 @@ dim(data2)
 
 
 
-#??
-
-?????? ?? ?? ?ٸ? ?ڵ忡 ?ִ???�� library(tableone)dct1 <-Cing, factorVars=factorVars1, inc,
-                     ludeNA = T)
-pri
-                     ,t(ct1, noSpaces=F, smd=F, showAllLevels print(ct1, noSpaces=F, smd=F, showAllLevels = T, quote=T, overall=T)
+?????? ?? ?? ?ٸ? ?ڵ忡 ?ִ???��Vars=factorVars1,
+inc,
+#?reateTableOne(vars = c(factorVars1, contiVars1),rary(tableone)dct1 <-Cing
+                     data = data1a smd=T)cVars=factorVars1,
+pacnels print(ct1, noSpaces=F, smd=F, showAllLevels = T, quote=T, overall=T)
 = T, quote = T, oveall = T)
 #install.packages('psych')
 psych::drescribe(t.25,.75) ) 
 
 
-ct1 <- CreateTableOne(vars=c(factor.cov), data=trainTransformed, factorVars=factorVars1, includeNA = T)
+ct1 <- CreateTableOne(vars=c(factor.cov), da
+
+
+ta=trainTransformed, factorVars=factorVars1, includeNA = T)
 print(ct1, noSpaces=F, smd=F, showAllLevels = T, quote = T, oveall = T)
 #install.packages('psych')
 getOption("max.print")
