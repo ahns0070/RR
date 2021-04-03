@@ -7,6 +7,11 @@
 #Read data.
 source("d:/r_program/function.r")
 
+source("https://raw.githubusercontent.com/ahns0070/RR/main/function.R")
+
+
+
+
 library(mi)
 
 setwd("/Users/siha/Documents/ML")
