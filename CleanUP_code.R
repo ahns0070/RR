@@ -164,8 +164,7 @@ factor.cov <- c(
 
 
 #missing value?? ?????? covariate?
-.cov, "delirium", "delirium2")]
-head(data2)
+data2 <- data1[, c(conti.cov, factor.data2)
 sum(is.na(data0$rhythm))
 
 dim(data0)
@@ -369,8 +368,7 @@ rf.ctrl <- trainControl ( method = "cv"
 training$log_wbc_max <- log(training$wbc_max)
 
 set.seed(1231)
-rf.select.model <- train(form = formula0, data =r
-interact0.f <- as.formula(delirium2 ~SHOCK*(albumin + inr + hemoglobin 
+rf.select.model <- tr ~SHOCK*(albumin + inr + hemoglobin 
                                       + c_reactive_protein + 
   bun + log_wbc_max + oxygen_therapy_type1 + oxygen_therapy_type2 + 
   heart_rate + creatinine + platelet + ast + age + 
@@ -381,33 +379,16 @@ glm(interact0.f, data = training, family = binomial)
   
 
 
-getModelInfo(model="rf")            , mic = "ROCset.seed(1231)
-rf.select.mode
+getModelInfo(model="rf")          training$log_wbc_max <- log(training$wbc_max)
 
- = interact0.f,start.time <- proc.time()
- data = training,
-                         meth         ,    , trControl = rf.ctrl
-    , metric = "ROC"
-                          "scale")
-  , 
-                                ,preProcess("c   .time <- pro)()
-end.time - s
-          #,tuneGrid = list(mtry = seq(2,10,2))e                         )
-                         
-Grid = li<- proc.timer()mend.time - start.times
-del 
+set.seed(1231)
+rf.select.model <- train(form = interact0.f, data = training, method = "rf"
+                         , metric = "ROC"
+                         , trControl = rf.ctrl
+                         , preProcess = c("center", "scale")
+) sn
 
-
-lect.model))
-
-
-## preproend.time - start.timeo
-el.nonscaled <in(form = formula0, data = trai;ning
-                                   , metric = "ROC"
-                                   , trControl = rf.ctrl
-)
-rf.select.model.nonscaled
-getTrainPerf(rf.select.model.nonscaled)
+rf(rf.select.model.nonscaled)
 varImp(rf.select.model.nonscaled)
 plot(varImp(rf.select.model.nonscaled))
 
