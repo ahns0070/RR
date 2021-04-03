@@ -184,8 +184,11 @@ dim(data2)
 
 library(tableone)
 
-ct1 <- CreateTableOne(vars=c(factorVars1), data=data1, factorVars=factorVars1, includeNA = T)
-print(ct1, noSpaces=F, smd=F, showAllLevels = T, quote = T, oveall = T)
+ct1 <- CreateTableOne(vars=c(factorThe descriptive statistics.data=data1, factorVars=factorVars1, includeNA = T)contiVars1, 
+print(ct1, noSpac = s=F, , 
+                      d=F, showAllLevels = T, quote = T, oF)
+a
+ll = T)
 #install.packages('psych')
 psych::describe(data1[contiVars1],quant=c(.25,.75) ) 
 
@@ -347,25 +350,36 @@ rf.ctrl <- trainControl ( method = "cv"
 training$log_wbc_max <- log(training$wbc_max)
 
 set.seed(1231)
-rf.select.model <- train(form = formula0, data =rf.select.model <- train(form = formula0, data = training
+rf.select.model <- train(form = formula0, data =r
+formula0 <- formula(delirium2 ~SHOCK*(albumin + inr + hemoglobin 
+                                      + c_reactive_protein + 
+  bun + log_wbc_max + oxygen_therapy_type1 + oxygen_therapy_type2 + 
+  heart_rate + creatinine + platelet + ast + age + 
+  sex + vasoactive_drug + dementia + cardiac_arrest_before_icu + 
+  CNS_ds_y_n)
+  
+glm(formula0, data = training, family = biomial)
+  
 
-set.seed(1231)
-                         start.time <- proc.time()
-set.seed(1231)od = "rf"
-                         , metric = "ROC"
-                         , trControl = rf.ctrl
-                         , preProcess = c("center", "scale")
-                         )
-end.time <- proc.time()
+
+
+            , metric = "ROCset.seed(1231)
+rf.select.model <- train(form = formula0, data = training,
+                         meth         ,    , trControl = rf.ctrl
+              ,enter", "scale")
+  , 
+                         .time <- proc.time()
 end.time - start.time
 l
 
-ot(varImp(rf.select.model))
+ot(varImp(rf.tuneGrid = 
+                         select.model))
 
 
-## preprocess ???? randomforest- ok
+## preproend.time - start.timeoplk
 set.seed(1231)
-rf.select.model.nonscaled <- train(form = formula0, data = training
+rf.selelt.mformula0d
+el.nonscaled <in(form = formula0, data = trai;ning
                                    , metric = "ROC"
                                    , trControl = rf.ctrl
 )
@@ -415,7 +429,7 @@ plot(varImp(adaboost.select.model))
 
 
 #?̰? ?м? ????
-set.seed(1231)
+
 gamboost.select.model <- train(form = formula0running faileding, method = "gamboost"
                                , metric = "ROC"
                                , trControl = rf.ctrl
