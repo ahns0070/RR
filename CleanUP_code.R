@@ -163,9 +163,7 @@ factor.cov <- c(
 )
 
 
-#missing value?? ?????? covariate?? Á¦???? ?????Í¼?À» ??????. training set À» ?????? À§??. deliriumÀº ?ß°??? ?????Í¼?À¸?? ????. 
-
-data2 <- data1[, c(conti.cov, factor.cov, "delirium", "delirium2")]
+#missing value?? ?????? covariate?? Á¦???? ?????Í¼irium2")]
 head(data2)
 sum(is.na(data0$rhythm))
 
@@ -180,20 +178,13 @@ dim(data2)
 
 
 
-## ????????
-
-library(tableone)
-
-ct1 <- CreateTableOne(vars=c(factorThe descriptive statistics.data=data1, factorVars=factorVars1, includeNA = T)contiVars1, 
+## ???torThe descriptive statistics.data=data1, factorVars=factorVars1, includeNA = T)contiVars1, 
 print(ct1, noSpac = s=F, , 
                       d=F, showAllLevels = T, quote = T, oF)
-a
+
 ll = T)
-#install.packages('psych')
-psych::describe(data1[contiVars1],quant=c(.25,.75) ) 
-
-
-ct1 <- CreateTableOne(vars=c(factor.cov), data=training, factorVars=factorVars1, includeNA = T)
+#innoSpaces=Fages('psych')
+psych::describe(data1[contiVars1],quareateTableOne(vars=c(factor.cov), data=training, factorVars=factorVars1, includeNA = T)
 print(ct1, noSpaces=F, smd=F, showAllLevels = T, quote = T, oveall = T)
 #install.packages('psych')
 psych::describe(training[conti.cov],quant=c(.25,.75) ) 
@@ -351,34 +342,34 @@ training$log_wbc_max <- log(training$wbc_max)
 
 set.seed(1231)
 rf.select.model <- train(form = formula0, data =r
-formula0 <- formula(delirium2 ~SHOCK*(albumin + inr + hemoglobin 
+interact0.f <- as.formula(delirium2 ~SHOCK*(albumin + inr + hemoglobin 
                                       + c_reactive_protein + 
   bun + log_wbc_max + oxygen_therapy_type1 + oxygen_therapy_type2 + 
   heart_rate + creatinine + platelet + ast + age + 
-  sex + vasoactive_drug + dementia + cardiac_arrest_before_icu + 
-  CNS_ds_y_n)
+    sex + vasoactive_drug + dementia + cardiac_arrest_before_icu + 
+  CNS_ds_y_n))
+
+glm(interact0.f, data = training, family = binomial)
   
-glm(formula0, data = training, family = biomial)
-  
 
 
-
-            , metric = "ROCset.seed(1231)
-rf.select.model <- train(form = formula0, data = training,
+getModelInfo(model="rf")            , metric = "ROCset.seed(1231)
+rf.select.model <- train(form = interact0.f, data = training,
                          meth         ,    , trControl = rf.ctrl
               ,enter", "scale")
   , 
                          .time <- proc.time()
-end.time - start.time
-l
+end.time - s
+                         #,tuneGrid = list(mtry = seq(2,10,2))
+                         serf.select.model
+summary(rf.select.model)
+rff <- rf.select.model 
 
-ot(varImp(rf.tuneGrid = 
-                         select.model))
+
+lect.model))
 
 
-## preproend.time - start.timeoplk
-set.seed(1231)
-rf.selelt.mformula0d
+## preproend.time - start.timeo
 el.nonscaled <in(form = formula0, data = trai;ning
                                    , metric = "ROC"
                                    , trControl = rf.ctrl
