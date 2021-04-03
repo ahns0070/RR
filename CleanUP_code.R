@@ -163,31 +163,70 @@ factor.cov <- c(
 )
 
 
-#missing value?? ?????? covariate?? Á¦???? ?????Í¼irium2")]
+#missing value?? ?????? covariate?
+
+data2 <- data1[, c(conti.cov, factor.cov, "delirium", "delirium2")]
 head(data2)
 sum(is.na(data0$rhythm))
 
 dim(data0)
 dim(data1)
 dim(data2)
+training <-  data.frame(data2[index[,1],] )
+test <-  data.frame(data2[-index[,1],])
+? 
+
+names(training)
+
+delinum = grep("delirium", names(training))
+delinum 
+
+set.seed(230)
+preProcValues <- preProcess(training[,-delinum], method = c("center", "scale", "YeoJohnson", "knnImpute"))
+preProcValues
+summary(preProcValues)
+
+trainTransformed <- predict(preProcValues, training)
+testTransformed <- predict(preProcValues, test)
 
 
+# categorical variables is factor status 
+
+training2 = training
+training2[factor.cov] = lapply(training[factor.cov], factor)
 
 
-#???????? ?? ?? ?Ù¸? ?Úµå¿¡ ?Ö´???À» ?Å°Ü¾? ??. 
+set.seed(99)
+preProcValues2 <- preProcess(training2[-delinum], method = c("center", "scale", "YeoJohnson"))
+preProcValues2
+summary(preProcValues2)
 
+basic(preProcValues$yj)
 
+trainTransformed2 <- predict(preProcValues2, training)
+testTransformed2 <- predict(preProcValues2, test)
 
-## ???torThe descriptive statistics.data=data1, factorVars=factorVars1, includeNA = T)contiVars1, 
-print(ct1, noSpac = s=F, , 
-                      d=F, showAllLevels = T, quote = T, oF)
-
-ll = T)
-#innoSpaces=Fages('psych')
-psych::describe(data1[contiVars1],quareateTableOne(vars=c(factor.cov), data=training, factorVars=factorVars1, includeNA = T)
-print(ct1, noSpaces=F, smd=F, showAllLevels = T, quote = T, oveall = T)
+library(tableone)
+cf1 <- CreateTableOne(vars=c(factorVars1), data=data1, factorVars=factorVars1, includeNA = T)
 #install.packages('psych')
-psych::describe(training[conti.cov],quant=c(.25,.75) ) 
+psych::describe(data1[contiVars1],quant=c(.25,.75) ) 
+
+m(data0)
+dim(data1)
+dim(data2)
+
+
+
+
+#??
+
+?????? ?? ?? ?Ù¸? ?Úµå¿¡ ?Ö´???À» library(tableone)dct1 <-Cing, factorVars=factorVars1, inc,
+                     ludeNA = T)
+pri
+                     ,t(ct1, noSpaces=F, smd=F, showAllLevels print(ct1, noSpaces=F, smd=F, showAllLevels = T, quote=T, overall=T)
+= T, quote = T, oveall = T)
+#install.packages('psych')
+psych::drescribe(t.25,.75) ) 
 
 
 ct1 <- CreateTableOne(vars=c(factor.cov), data=trainTransformed, factorVars=factorVars1, includeNA = T)
@@ -198,19 +237,9 @@ psych::describe(trainTransformed[c(conti.cov)],quant=c(.25,.75) )
 
 
 
-ct1 <- CreateTableOne(vars=c(factorVars1), data=trainTransformed2, factorVars=factorVars1, includeNA = T)
-print(ct1, noSpaces=F, smd=F, showAllLevels = T, quote = T, oveall = T)
-#install.packages('psych')
-psych::describe(trainTransformed2[conti.cov],
-quant=c(.25,.75) ) 
+ct1 <- CreateTableOne(vars=c(factorVars1) regression 
 
-getOption("max.print")
-
-
-
-###simple logistic regression 
-
-#continuous covariate
+#continuoucovariate
 cov1 <- c(factor.cov, conti.cov)
 trainTransformed$delirium <- trainTransformed2$delirium
 
@@ -265,6 +294,9 @@ test <-  data.frame(data2[-index[,1],])
 
 names(training)
 
+delinum = grep("delirium",
+names(training)
+
 delinum = grep("delirium", names(training))
 delinum 
 
@@ -276,12 +308,7 @@ summary(preProcValues)
 
 trainTransformed <- predict(preProcValues, training)
 testTransformed <- predict(preProcValues, test)
-
-
-
-
-
-# categorical variables is factor status 
+s 
 
 training2 = training
 training2[factor.cov] = lapply(training[factor.cov], factor)
@@ -353,17 +380,21 @@ glm(interact0.f, data = training, family = binomial)
   
 
 
-getModelInfo(model="rf")            , metric = "ROCset.seed(1231)
-rf.select.model <- train(form = interact0.f, data = training,
+getModelInfo(model="rf")            , mic = "ROCset.seed(1231)
+rf.select.mode
+
+ = interact0.f,start.time <- proc.time()
+ data = training,
                          meth         ,    , trControl = rf.ctrl
-              ,enter", "scale")
+    , metric = "ROC"
+                          "scale")
   , 
-                         .time <- proc.time()
+                                ,preProcess("c   .time <- pro)()
 end.time - s
-                         #,tuneGrid = list(mtry = seq(2,10,2))
-                         serf.select.model
-summary(rf.select.model)
-rff <- rf.select.model 
+          #,tuneGrid = list(mtry = seq(2,10,2))e                         )
+                         
+Grid = li<- proc.timer()mend.time - start.times
+del 
 
 
 lect.model))
