@@ -220,7 +220,7 @@ dim(data2)
 
 #??
 
-?????? ?? ?? ?ٸ? ?ڵ忡 ?ִ???�� library(tableone)dct1 <-Cing, factorVars=factorVars1, inc,
+?????? ?? ?? ?ٸ? ?ڵ忡 ?ִ???�� library(tableone)dct1 <-Cing, factorVars=factorVars1, inc,
                      ludeNA = T)
 pri
                      ,t(ct1, noSpaces=F, smd=F, showAllLevels print(ct1, noSpaces=F, smd=F, showAllLevels = T, quote=T, overall=T)
