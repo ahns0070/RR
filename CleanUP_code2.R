@@ -343,10 +343,11 @@ training$log_wbc_max <- log(training$wbc_max)
 
 set.seed(1231)
 rf.select.model <- train(form = formula0, data =rf.select.model <- train(form = formula0, data = training)
+
                          
                          
 set.seed(1231)
-                         start.time <- proc.time()
+start.time <- proc.time()
 set.seed(1231)od = "rf"
                          , metric = "ROC"
                          , trControl = rf.ctrl
