@@ -6,7 +6,7 @@
 
 #Read data.
 source("d:/r_program/function.r")
-
+source("https://ß")
 library(mi)
 
 setwd("/Users/siha/Documents/ML")
