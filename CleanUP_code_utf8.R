@@ -7,9 +7,12 @@
 #Read data.
 source("d:/r_program/function.r")
 
+source("https://raw.githubusercontent.com/ahns0070/RR/edit.functionR/function.R")
+
 library(mi)
 
-#setwd("e:/stat/prediction_yang")
+setwd("e:/stat/prediction_yang")
+setwd("/Users/siha/Documents/ML")
 data0 <- read.csv("newdata.csv", na = c("", NA, '.'))
 dim(data0)
 
@@ -176,66 +179,8 @@ print(ct1, noSpaces=F, smd=F, showAllLevels = T, quote = T, oveall = T)
 psych::describe(data1[contiVars1],quant=c(.25,.75) ) 
 
 
-ct1 <- CreateTableOne(vars=c(factor.cov), data=training, factorVars=factorVars1, includeNA = T)
-print(ct1, noSpaces=F, smd=F, showAllLevels = T, quote = T, oveall = T)
-#install.packages('psych')
-psych::describe(training[conti.cov],quant=c(.25,.75) ) 
 
 
-ct1 <- CreateTableOne(vars=c(factor.cov), data=trainTransformed, factorVars=factorVars1, includeNA = T)
-print(ct1, noSpaces=F, smd=F, showAllLevels = T, quote = T, oveall = T)
-#install.packages('psych')
-getOption("max.print")
-psych::describe(trainTransformed[c(conti.cov)],quant=c(.25,.75) ) 
-
-
-
-ct1 <- CreateTableOne(vars=c(factorVars1), data=trainTransformed2, factorVars=factorVars1, includeNA = T)
-print(ct1, noSpaces=F, smd=F, showAllLevels = T, quote = T, oveall = T)
-#install.packages('psych')
-psych::describe(trainTransformed2[conti.cov],quant=c(.25,.75) ) 
-
-getOption("max.print")
-
-
-
-###simple logistic regression 
-
-#continuous covariate
-cov1 <- c(factor.cov, conti.cov)
-trainTransformed$delirium <- trainTransformed2$delirium
-
-trainTransformed$age
-
-hist(trainTransformed$age)
-
-
-list1 <- lapply(trainTransformed[conti.cov],  function(x) glm(delirium ~ x , data = trainTransformed, family = binomial) )
-list2 <- lapply(list1, summary)
-
-kk <- cbind(
-  t(sapply(list2, function(x) x$coef[-1,])),
-  (sapply(list2, function(x) exp(x$coef[-1,1]))),
-  t(sapply(list1, function(x) exp(confint(x)[-1,]))))
-colnames(kk ) <- c("Estimate", "Std.Error", "Z-value", "P-value", "OR", "lower.limit", "upper.limit")
-kk
-
-clear_clip()
-
-#categorical covariate
-#caution : multi-level categorical variable
-list1 <- lapply(data1[factor.cov],  function(x) glm(delirium  ~ x , data = data1, family = binomial) )
-list2 <- lapply(list1, summary)
-
-jj <- cbind(
-  oo <- do.call('rbind', lapply(list2, function(x) x$coef[-1,])),
-  exp(oo[,1]),
-  oo2 <- do.call('rbind', lapply(list1, function(x) exp(confint(x)[-1,])))
-)
-rep(factorVars1, unlist(lapply(data1[factorVars1], nlevels))-1)
-rownames(jj) <- paste(rep(factorVars1, unlist(lapply(data1[factorVars1], nlevels))-1) , unlist(lapply(data1[factorVars1], function(x) levels(x)[-1] )), sep = "")
-colnames(jj) <- c("Estimate", "Std.Error", "Z-value", "P-value", "OR", "lower.limit", "upper.limit")
-jj
 
 
 
@@ -292,6 +237,67 @@ training2$delirium
 
 trainTransformed$delirium
 
+ct1 <- CreateTableOne(vars=c(factor.cov), data=training, factorVars=factorVars1, includeNA = T)
+print(ct1, noSpaces=F, smd=F, showAllLevels = T, quote = T, oveall = T)
+#install.packages('psych')
+psych::describe(training[conti.cov],quant=c(.25,.75) ) 
+
+
+ct1 <- CreateTableOne(vars=c(factor.cov), data=trainTransformed, factorVars=factorVars1, includeNA = T)
+print(ct1, noSpaces=F, smd=F, showAllLevels = T, quote = T, oveall = T)
+#install.packages('psych')
+getOption("max.print")
+psych::describe(trainTransformed[c(conti.cov)],quant=c(.25,.75) ) 
+
+
+
+ct1 <- CreateTableOne(vars=c(factorVars1), data=trainTransformed2, factorVars=factorVars1, includeNA = T)
+print(ct1, noSpaces=F, smd=F, showAllLevels = T, quote = T, oveall = T)
+#install.packages('psych')
+psych::describe(trainTransformed2[conti.cov],quant=c(.25,.75) ) 
+
+getOption("max.print")
+
+
+###simple logistic regression 
+
+#continuous covariate
+cov1 <- c(factor.cov, conti.cov)
+trainTransformed$delirium <- trainTransformed2$delirium
+
+trainTransformed$age
+
+hist(trainTransformed$age)
+
+
+list1 <- lapply(trainTransformed[conti.cov],  function(x) glm(delirium ~ x , data = trainTransformed, family = binomial) )
+list2 <- lapply(list1, summary)
+
+kk <- cbind(
+  t(sapply(list2, function(x) x$coef[-1,])),
+  (sapply(list2, function(x) exp(x$coef[-1,1]))),
+  t(sapply(list1, function(x) exp(confint(x)[-1,]))))
+colnames(kk ) <- c("Estimate", "Std.Error", "Z-value", "P-value", "OR", "lower.limit", "upper.limit")
+kk
+
+clear_clip()
+
+#categorical covariate
+#caution : multi-level categorical variable
+list1 <- lapply(data1[factor.cov],  function(x) glm(delirium  ~ x , data = data1, family = binomial) )
+list2 <- lapply(list1, summary)
+
+jj <- cbind(
+  oo <- do.call('rbind', lapply(list2, function(x) x$coef[-1,])),
+  exp(oo[,1]),
+  oo2 <- do.call('rbind', lapply(list1, function(x) exp(confint(x)[-1,])))
+)
+rep(factorVars1, unlist(lapply(data1[factorVars1], nlevels))-1)
+rownames(jj) <- paste(rep(factorVars1, unlist(lapply(data1[factorVars1], nlevels))-1) , unlist(lapply(data1[factorVars1], function(x) levels(x)[-1] )), sep = "")
+colnames(jj) <- c("Estimate", "Std.Error", "Z-value", "P-value", "OR", "lower.limit", "upper.limit")
+jj
+
+
 ############################################################################
 ####step3 : Feature selection using machine learning method on training set
 #see caret2.r
@@ -300,7 +306,6 @@ trainTransformed$delirium
 
 
 #orange model. 
-
 
 
 
@@ -318,6 +323,14 @@ training$delirium2
 
 
 
+interact.f0 <- formula(delirium2 ~ SHOCK*(albumin + inr + hemoglobin + c_reactive_protein + bun
+                    + log_wbc_max + oxygen_therapy_type1 + oxygen_therapy_type2 + heart_rate + creatinine + platelet + ast
+                    + age + sex + vasoactive_drug + dementia + cardiac_arrest_before_icu + CNS_ds_y_n))
+
+training$delirium2
+
+
+
 #Addtional Feature selection using RF- ok
 
 rf.ctrl <- trainControl ( method = "cv"
@@ -327,19 +340,20 @@ rf.ctrl <- trainControl ( method = "cv"
                           , summaryFunction = twoClassSummary
 )
 
-?trainControl
 
 
 #Random Forest
 
 training$log_wbc_max <- log(training$wbc_max)
-
+start.t <- proc.time()
 set.seed(1231)
 rf.select.model <- train(form = formula0, data = training, method = "rf"
                          , metric = "ROC"
                          , trControl = rf.ctrl
                          , preProcess = c("center", "scale")
 )
+end.t <- proc.time()
+end.t - start.t
 
 rf.select.model
 getTrainPerf(rf.select.model)
@@ -347,7 +361,54 @@ varImp(rf.select.model)
 plot(varImp(rf.select.model))
 
 
-## preprocess ???? randomforest- ok
+#Consider intereaction effect
+training$log_wbc_max <- log(training$wbc_max)
+start.t <- proc.time()
+set.seed(1231)
+rf.select.model <- train(form = interact.f0, data = training, method = "rf"
+                         , metric = "ROC"
+                         , trControl = rf.ctrl
+                         , preProcess = c("center", "scale")
+)
+end.t <- proc.time()
+end.t - start.t
+
+rf.select.model
+getTrainPerf(rf.select.model)
+varImp(rf.select.model)
+plot(varImp(rf.select.model))
+
+
+
+#Consider intereaction effect
+
+
+interact.f1 <- formula(delirium2 ~ SHOCK*(albumin + bun+inr + heart_rate+ age+ hemoglobin + c_reactive_protein
+                                          + log_wbc_max + oxygen_therapy_type1 + oxygen_therapy_type2 ) 
+                                          + creatinine + platelet + ast
+                                           + sex + vasoactive_drug + dementia + cardiac_arrest_before_icu 
+                                          + CNS_ds_y_n)
+
+training$log_wbc_max <- log(training$wbc_max)
+start.t <- proc.time()
+set.seed(1231)
+rf.select.model <- train(form = interact.f1, data = training, method = "rf"
+                         , metric = "ROC"
+                         , trControl = rf.ctrl
+                         , preProcess = c("center", "scale")
+)
+end.t <- proc.time()
+end.t - start.t
+
+rf.select.model
+getTrainPerf(rf.select.model)
+varImp(rf.select.model)
+plot(varImp(rf.select.model))
+
+
+
+
+## preprocess randomforest- ok
 set.seed(1231)
 rf.select.model.nonscaled <- train(form = formula0, data = training
                                    , metric = "ROC"
