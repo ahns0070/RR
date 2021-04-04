@@ -1,20 +1,15 @@
-
 #### Step1 : Data screening, preprocessing
+
 
 ## Read data. 
 
 
 #Read data.
-#source("d:/r_program/function.r")
-
-source("https://raw.githubusercontent.com/ahns0070/RR/main/function.R")
-
-
-
+source("d:/r_program/function.r")
 
 library(mi)
 
-setwd("/Users/siha/Documents/ML")
+#setwd("e:/stat/prediction_yang")
 data0 <- read.csv("newdata.csv", na = c("", NA, '.'))
 dim(data0)
 
@@ -48,8 +43,9 @@ contiVars1 <- c(
 
 conti.cov <- c(
   "age","bmi",
-  # "sofa_total","apache2",  "sofa_total",
-  "astolic_blood_pressure","map","heart_rate", #At Admision
+  # "sofa_total","apache2", 
+  #"GCS", #Demographics
+  "systolic_blood_pressure","diastolic_blood_pressure","map","heart_rate", #At Admision
   "respiratory_rate","body_temperature","saturation",
   "wbc_max","wbc_min","hemoglobin","hematocrit","platelet","total_bilirubin","ast",
   "alt","albumin","bun","creatinine","sodium","potassium","chloride",
@@ -68,7 +64,9 @@ factorVars1 <- c(
   "urgent","icu_admission_status",#Demographics
   "cardiac_arrest_before_icu",
   "htn","dm",
-  "smoking", #smoking?? P value ?? ???? ge","dementia","psychotic",
+  "smoking", #smoking
+  "stroke", #Comorbidities
+  "hemorrhage","dementia","psychotic",
   "tumor","CND","CNS_ds_y_n","chronic_lung_dz",
   "renal_impairment","liver_dz",
   "solid_cancer","hematologic_malig",
@@ -159,9 +157,6 @@ factor.cov <- c(
   "oxygen_therapy_type1",  "oxygen_therapy_type2", "rhythm" #At Admision
 )
 
-
-#missing value?? ?????? covariate?
-
 data2 <- data1[, c(conti.cov, factor.cov, "delirium", "delirium2")]
 head(data2)
 sum(is.na(data0$rhythm))
@@ -169,59 +164,22 @@ sum(is.na(data0$rhythm))
 dim(data0)
 dim(data1)
 dim(data2)
-training <-  data.frame(data2[index[,1],] )
-test <-  data.frame(data2[-index[,1],])
-? 
-
-names(training)
-
-delinum = grep("delirium", names(training))
-delinum 
-
-set.seed(230)
-preProcValues <- preProcess(training[,-delinum], method = c("center", "scale", "YeoJohnson", "knnImpute"))
-preProcValues
-summary(preProcValues)
-
-trainTransformed <- predict(preProcValues, training)
-testTransformed <- predict(preProcValues, test)
 
 
-# categorical variables is factor status 
 
-training2 = training
-training2[factor.cov] = lapply(training[factor.cov], factor)
-
-
-set.seed(99)
-preProcValues2 <- preProcess(training2[-delinum], method = c("center", "scale", "YeoJohnson"))
-preProcValues2
-summary(preProcValues2)
-
-basic(preProcValues$yj)
-
-trainTransformed2 <- predict(preProcValues2, training)
-testTransformed2 <- predict(preProcValues2, test)
 
 library(tableone)
-cf1 <- CreateTableOne(vars=c(factorVars1), data=data1, factorVars=factorVars1, includeNA = T)
+
+ct1 <- CreateTableOne(vars=c(factorVars1), data=data1, factorVars=factorVars1, includeNA = T)
+print(ct1, noSpaces=F, smd=F, showAllLevels = T, quote = T, oveall = T)
 #install.packages('psych')
 psych::describe(data1[contiVars1],quant=c(.25,.75) ) 
 
-m(data0)
-dim(data1)
-dim(data2)
 
-
-
-
-#??
-
-?????? ?? ?? ?ٸ? ?ڵ忡 ?ִ??Vars=factorVars1,
-inc,
- CreateTableOne(vars = c(contiVars1, factorVars1),               ludeNA = T)
-p ,t(ct1, noS
-escribe(t.25,.75) ) 
+ct1 <- CreateTableOne(vars=c(factor.cov), data=training, factorVars=factorVars1, includeNA = T)
+print(ct1, noSpaces=F, smd=F, showAllLevels = T, quote = T, oveall = T)
+#install.packages('psych')
+psych::describe(training[conti.cov],quant=c(.25,.75) ) 
 
 
 ct1 <- CreateTableOne(vars=c(factor.cov), data=trainTransformed, factorVars=factorVars1, includeNA = T)
@@ -232,9 +190,18 @@ psych::describe(trainTransformed[c(conti.cov)],quant=c(.25,.75) )
 
 
 
-ct1 <- CreateTableOne(vars=c(factorVars1) regression 
+ct1 <- CreateTableOne(vars=c(factorVars1), data=trainTransformed2, factorVars=factorVars1, includeNA = T)
+print(ct1, noSpaces=F, smd=F, showAllLevels = T, quote = T, oveall = T)
+#install.packages('psych')
+psych::describe(trainTransformed2[conti.cov],quant=c(.25,.75) ) 
 
-#continuoucovariate
+getOption("max.print")
+
+
+
+###simple logistic regression 
+
+#continuous covariate
 cov1 <- c(factor.cov, conti.cov)
 trainTransformed$delirium <- trainTransformed2$delirium
 
@@ -289,9 +256,6 @@ test <-  data.frame(data2[-index[,1],])
 
 names(training)
 
-delinum = grep("delirium",
-names(training)
-
 delinum = grep("delirium", names(training))
 delinum 
 
@@ -303,7 +267,12 @@ summary(preProcValues)
 
 trainTransformed <- predict(preProcValues, training)
 testTransformed <- predict(preProcValues, test)
-s 
+
+
+
+
+
+# categorical variables is factor status 
 
 training2 = training
 training2[factor.cov] = lapply(training[factor.cov], factor)
@@ -341,8 +310,8 @@ trainTransformed$delirium
 
 
 formula0 <- formula(delirium2 ~ albumin + inr + hemoglobin + c_reactive_protein + bun
-+ log_wbc_max + oxygen_therapy_type1 + oxygen_therapy_type2 + heart_rate + creatinine + platelet + ast
-+ SHOCK + age + sex + vasoactive_drug + dementia + cardiac_arrest_before_icu + CNS_ds_y_n)
+                    + log_wbc_max + oxygen_therapy_type1 + oxygen_therapy_type2 + heart_rate + creatinine + platelet + ast
+                    + SHOCK + age + sex + vasoactive_drug + dementia + cardiac_arrest_before_icu + CNS_ds_y_n)
 
 training$delirium2
 
@@ -356,47 +325,31 @@ rf.ctrl <- trainControl ( method = "cv"
                           , savePredictions = T
                           , classProbs = T
                           , summaryFunction = twoClassSummary
-                          )
+)
+
+?trainControl
+
 
 #Random Forest
 
 training$log_wbc_max <- log(training$wbc_max)
 
 set.seed(1231)
-rf.select.model <- train(form = formula0, data =r
-interact0.f <- as.formula(delirium2 ~SHOCK*(albumin + inr + hemoglobin 
-                                      + c_reactive_protein + 
-  bun + log_wbc_max + oxygen_therapy_type1 + oxygen_therapy_type2 + 
-  heart_rate + creatinine + platelet + ast + age + 
-    sex + vasoactive_drug + dementia + cardiac_arrest_before_icu + 
-  CNS_ds_y_n))
+rf.select.model <- train(form = formula0, data = training, method = "rf"
+                         , metric = "ROC"
+                         , trControl = rf.ctrl
+                         , preProcess = c("center", "scale")
+)
 
-glm(interact0.f, data = training, family = binomial)
-  
-
-
-getModelInfo(model="rf")            , mic = "ROCset.seed(1231)
-rf.select.mode
-
- = interact0.f,start.time <- proc.time()
- data = training,
-                         meth         ,    , trControl = rf.ctrl
-    , metric = "ROC"
-                          "scale")
-  , 
-                                ,preProcess("c   .time <- pro)()
-end.time - s
-          #,tuneGrid = list(mtry = seq(2,10,2))e                         )
-                         
-Grid = li<- proc.timer()mend.time - start.times
-del 
+rf.select.model
+getTrainPerf(rf.select.model)
+varImp(rf.select.model)
+plot(varImp(rf.select.model))
 
 
-lect.model))
-
-
-## preproend.time - start.timeo
-el.nonscaled <in(form = formula0, data = trai;ning
+## preprocess ???? randomforest- ok
+set.seed(1231)
+rf.select.model.nonscaled <- train(form = formula0, data = training
                                    , metric = "ROC"
                                    , trControl = rf.ctrl
 )
@@ -409,9 +362,9 @@ plot(varImp(rf.select.model.nonscaled))
 #linear discriminant analysis - ok
 set.seed(1231)
 lda.select.model <- train(form = formula0, data = training, method = "lda"
-                         , metric = "ROC"
-                         , trControl = rf.ctrl
-                         , preProcess = c("center", "scale")
+                          , metric = "ROC"
+                          , trControl = rf.ctrl
+                          , preProcess = c("center", "scale")
 )
 
 
@@ -426,54 +379,44 @@ defaultSummary(lda.select.model)
 
 
 
-#?̰ź??? ?ð??? ?��? ?ɸ???. ok
-
-set.seed(1231)
-adaboost.select.modeln#It takes quite long time.
-st <- proc.time()
 set.seed(1231)
 adaboost.select.model <- train(form = formula0, data = training, method = "adaboost"
-                         , metric = "ROC"
-                         , trControl = rf.ctrl
-                         , preProcess = c("center", "scale")
-)
-endt <- proc.time()
-endt - st
-
-
-lect.model)
-plot(varImp(adaboost.select.model))
-
-
-#?̰? ?м? ????
-
-gamboost.select.model <- train(form = formula0running faileding, method = "gamboost"
                                , metric = "ROC"
                                , trControl = rf.ctrl
                                , preProcess = c("center", "scale")
 )
 
+adaboost.select.model
+getTrainPerf(adaboost.select.model)
+varImp(adaboost.select.model)
+plot(varImp(adaboost.select.model))
 
-#?̰? ?ð??? ??ϰ? ?ɸ??µ? 
-deepboost.ctrl <- trainControl ( method = "
-vfailed.number = 10
-                          , savePredictions = T
-                          #, classProbs = T
-                          #, summaryFunction = twoClassSummary
-                          )
+
+set.seed(1231)
+gamboost.select.model <- train(form = formula0, data = training, method = "gamboost"
+                               , metric = "ROC"
+                               , trControl = rf.ctrl
+                               , preProcess = c("center", "scale")
+)
+
+deepboost.ctrl <- trainControl ( method = "cv"
+                                 , number = 10
+                                 , savePredictions = T
+                                 #, classProbs = T
+                                 #, summaryFunction = twoClassSummary
+)
 
 set.seed(1231)
 deepboost.select.model <- train(form = formula0, data = training, method = "deepboost"
-                               #, metric = "ROC"
-                               , trControl = deepboost.ctrl
-                               , preProcess = c("center", "scale")
-                               )
+                                #, metric = "ROC"
+                                , trControl = deepboost.ctrl
+                                , preProcess = c("center", "scale")
+)
 #Error in evalSummaryFunction(y, wts = weights, ctrl = trControl, lev = classLevels,  : 
 #train()'s use of ROC codes requires class probabilities. See the classProbs option of trainControl()
-#?߰?��??: ?????޽???(??): 
 #In train.default(x, y, weights = w, ...) :
 #  Class probabilities were requested for a model that does not implement them
-  
+
 
 
 
@@ -482,9 +425,9 @@ glmStepAIC
 #stepwise selection
 set.seed(1231)
 glmStepAIC.select.model <- train(form = formula0, data = training, method = "glmStepAIC"
-                                , metric = "ROC"
-                                , trControl = rf.ctrl
-                                , preProcess = c("center", "scale")
+                                 , metric = "ROC"
+                                 , trControl = rf.ctrl
+                                 , preProcess = c("center", "scale")
 )
 glmStepAIC.select.model
 getTrainPerf(glmStepAIC.select.model)
@@ -493,8 +436,6 @@ plot(varImp(glmStepAIC.select.model))
 
 
 
-
-#?Ʒ????? ?????? ?ȵ?
 set.seed(1231)
 glmnet_h20.select.model <- train(form = formula0, data = training, method = "glmnet_h20"
                                  , metric = "ROC"
@@ -507,13 +448,11 @@ varImp(glmnet_h20.select.model)
 plot(varImp(glmnet_h20.select.model))
 
 
-
-#?ð??? ��?? ?ɸ?, ok ?׷??? ???õ? ?????????? ???ݱ????ϰ??? ???? ???̳?. 
 set.seed(1231)
 C5.0.select.model <- train(form = formula0, data = training, method = "C5.0"
-                                 , metric = "ROC"
-                                 , trControl = rf.ctrl
-                                 , preProcess = c("center", "scale")
+                           , metric = "ROC"
+                           , trControl = rf.ctrl
+                           , preProcess = c("center", "scale")
 )
 C5.0.select.model
 getTrainPerf(C5.0.select.model)
@@ -525,9 +464,9 @@ plot(varImp(C5.0.select.model))
 #AdaBag - success
 set.seed(1231)
 AdaBag.select.model <- train(form = formula0, data = training, method = "AdaBag"
-                           , metric = "ROC"
-                           , trControl = rf.ctrl
-                           , preProcess = c("center", "scale")
+                             , metric = "ROC"
+                             , trControl = rf.ctrl
+                             , preProcess = c("center", "scale")
 )
 AdaBag.select.model
 getTrainPerf(AdaBag.select.model)
@@ -563,8 +502,8 @@ plot(varImp(bag.select.model))
 
 
 formula1 <- formula(delirium2 ~ albumin + bun + oxygen_therapy_type1 + oxygen_therapy_type2 + 
-  heart_rate + platelet + ast + wbc_min + age + sex + dementia + 
-  CNS_ds_y_n+ SHOCK)
+                      heart_rate + platelet + ast + wbc_min + age + sex + dementia + 
+                      CNS_ds_y_n+ SHOCK)
 
 formula2 <- formula(delirium2 ~ oxygen_therapy_type1 + oxygen_therapy_type2 + age + 
                       CNS_ds_y_n + albumin)
@@ -574,7 +513,7 @@ formula3 <- formula(delirium2 ~ oxygen_therapy_type1 + oxygen_therapy_type2 + in
 
 formula4 <- formula(delirium ~ albumin + oxygen_therapy_type1 + oxygen_therapy_type2 + 
                       c_reactive_protein + log_wbc_max + platelet + heart_rate + age + 
-                       + ast + CNS_ds_y_n + SHOCK)
+                      + ast + CNS_ds_y_n + SHOCK)
 
 ##
 #albumin	100
@@ -598,7 +537,7 @@ formula4 <- formula(delirium ~ albumin + oxygen_therapy_type1 + oxygen_therapy_t
 #vasoactive_drug	4.99
 #dementia	0
 #
-  
+
 formula0 <- as.formula(delirium ~ albumin+inr +hemoglobin +c_reactive_protein +bun +log_wbc_max
                        +oxygen_therapy_type1 +heart_rate +creatinine +platelet +ast
                        +SHOCK +age +vasoactive_drug +CNS_ds_y_n +cardiac_arrest_before_icu +oxygen_therapy_type2 +sex +dementia)
@@ -828,13 +767,14 @@ formula9
 #Albumin
 
 library(lava)
+par(mfrow = c(1,1))
 hist(training$albumin)
 rcspline.plot(x = training$albumin, y = training$delirium, model = "logistic", statloc="none")
 par(new=T)
 with(training, hist(training$albumin, xlim = c(1.5,5), ylim = c(0, 1000), main = ""
                     , col = Col("lightgrey", 0.3),yaxt="n", ylab="", nclass = 30), axis(side =4))
 
-
+log
 #INR
 basic(training$inr)
 hist(log(training$inr))
@@ -853,7 +793,7 @@ basic(log(log(training$inr)+1))
 
 
 par(mfrow = c(1,2))
-with(training, boxplot(log(log(training$inr)+1) ~ delirium)) #log?? ?ι? ??ȭ?ϳ? ?ѹ? ??ȭ?ϳ? ????�� ?????غ???.
+with(training, boxplot(log(log(training$inr)+1) ~ delirium)) 
 with(training, boxplot(log(training$inr) ~ delirium))
 
 
@@ -880,7 +820,8 @@ inr.f(0.3)
 inr.f(0.4)
 inr.f(0.5)
 
-#inr ?? ?Ҷ? ???? kappa?? ????. exp(0.2)?? ¥??
+
+
 training$inr_g2 <- ifelse(training$inr > exp(0.2), 1, 0)
 with(training, confusionMatrix(factor(inr_g2), reference = factor(delirium) ))
 
@@ -964,7 +905,7 @@ hist(log(training$log_wbc_max))
 
 par(mfrow =c(1,1))
 rc1 <- rcspline.plot(x = training$log_wbc_max, y = training$delirium
-                    , model = "logistic", statloc="none")
+                     , model = "logistic", statloc="none")
 str(rc1)
 rc1$knots
 range(rc1$x)
@@ -1005,7 +946,6 @@ with(training, hist((training$heart_rate), xlim = c(20, 180), ylim = c(0, 500), 
 with(training, boxplot(log(training$heart_rate)~delirium))
 
 
-#Heart rate ?? ???? 60~70 ???̸? ��???? ???? risk ?? ???? ??��. 
 
 training$hr_g <- ifelse(training$heart_rate>60 & training$heart_rate<70, 0, 1)
 with(training, table(hr_g, delirium))
@@ -1030,7 +970,7 @@ hr.f(0, 90)
 hr.f(40, 90)
 hr.f(30, 100)
 
-hr.f(30, 90) #?̰? ��?? ??��. 
+hr.f(30, 90)
 
 abline(v = 30, col = 2, lty = 2)
 abline(v = 90, col = 2, lty = 2)
@@ -1063,7 +1003,7 @@ with(training, boxplot(log(training$creatinine)~delirium))
 
 cr.f <- function(v1, v2){
   training$cr_g <- ifelse(log(training$creatinine)>v1 & log(training$creatinine)<v2, 0, 1)
-    print(confusionMatrix(data = factor(training$cr_g), reference = factor(training$delirium)))
+  print(confusionMatrix(data = factor(training$cr_g), reference = factor(training$delirium)))
   return(with(training, table(cr_g, delirium)))
 }
 
@@ -1281,7 +1221,7 @@ with(test,table(as.integer(cut(age, c(0,60, 70, 80, 90, 120))), (cut(age, c(0,60
 
 
 
-training$log_albumin <- log(training$albumin)
+training$albumin <- training$albumin
 training$inr_g2 <- ifelse(training$inr > exp(0.2), 1, 0)
 training$log_hb <- log(training$hemoglobin)
 training$log_crp <- log(training$c_reactive_protein)
@@ -1294,7 +1234,7 @@ training$plt_g <- ifelse((training$platelet)>120 & (training$platelet)<340, 0, 1
 training$ast_g <- as.integer(cut(training$ast, c(0, 40, 424, 200000)))
 training$age_g <- with(training,as.integer(cut(age, c(0,60, 70, 80, 90, 120))))
 
-test$log_albumin <- log(test$albumin)
+test$albumin <- (test$albumin)
 test$inr_g2 <- ifelse(test$inr > exp(0.2), 1, 0)
 test$log_hb <- log(test$hemoglobin)
 test$log_crp <- log(test$c_reactive_protein)
@@ -1332,12 +1272,12 @@ table(data2$age[-index[,1]] == test$age)
 table(test$oxygen_therapy_type, test$oxygen_therapy_type2)
 table(test$oxygen_therapy_type, test$oxygen_therapy_type1)
 
- 
+
 
 training.score <- training 
 tr.s <- training.score
 
-score.cont <- c("log_albumin", "log_hb", "log_crp", "log_bun", "log_wbc_max")
+score.cont <- c("albumin", "log_hb", "log_crp", "log_bun", "log_wbc_max")
 score.fact <- c("inr_g2", "oxygen_therapy_type", "hr_g", "cr_g", "plt_g", "ast_g", "SHOCK", "age_g")
 
 
@@ -1346,32 +1286,54 @@ training[score.fact] = lapply(training[score.fact], factor)
 test[score.fact] = lapply(test[score.fact], factor)
 
 
-lrm1 <- lrm(delirium ~ log_albumin + inr_g2 + log_hb + log_crp + log_bun + 
-  log_wbc_max + oxygen_therapy_type1 + oxygen_therapy_type2 
-  + hr_g + cr_g + plt_g + ast_g + SHOCK + age_g , data = training)
-
-glm1 <- glm(delirium ~ log_albumin + inr_g2 + log_hb + log_crp + log_bun + 
-      log_wbc_max + oxygen_therapy_type1 + oxygen_therapy_type2 
-    + hr_g + cr_g + plt_g + ast_g + SHOCK + age_g , data = training, family = binomial())
-
-
-#cr?? bun ?? ?????? ???? ?ϳ??? ????. bun�� ????. 
-lrm1 <- lrm(delirium ~ log_albumin + inr_g2 + log_hb + log_crp  + 
+lrm1 <- lrm(delirium ~ albumin + inr_g2 + log_hb + log_crp + log_bun + 
               log_wbc_max + oxygen_therapy_type1 + oxygen_therapy_type2 
             + hr_g + cr_g + plt_g + ast_g + SHOCK + age_g , data = training)
 
-glm1 <- glm(delirium ~ log_albumin + inr_g2 + log_hb + log_crp  + 
+glm1 <- glm(delirium ~ albumin + inr_g2 + log_hb + log_crp + log_bun + 
               log_wbc_max + oxygen_therapy_type1 + oxygen_therapy_type2 
             + hr_g + cr_g + plt_g + ast_g + SHOCK + age_g , data = training, family = binomial())
 
-#cr?? bun ?? ?????? ???? ?ϳ??? ????. bun�� ????. 
-lrm2 <- lrm(delirium ~ log_albumin + inr_g2 + log_hb + log_crp  + 
-              log_wbc_max + oxygen_therapy_type1 + oxygen_therapy_type2 
+#remove cr bun.
+lrm1 <- lrm(delirium ~ albumin + inr_g2 + log_hb + log_crp  + 
+              log_wbc_max + oxygen_therapy_type
+            + hr_g + cr_g + plt_g + ast_g + SHOCK + age_g , data = training)
+
+glm1 <- glm(delirium ~ albumin + inr_g2 + log_hb + log_crp  + 
+              log_wbc_max + oxygen_therapy_type 
+            + hr_g + cr_g + plt_g + ast_g + SHOCK + age_g , data = training, family = binomial())
+
+# delete bun, shock 
+lrm2 <- lrm(delirium ~ albumin + inr_g2 + log_hb + log_crp  + 
+              log_wbc_max + oxygen_therapy_type
             + hr_g + cr_g + plt_g + ast_g + age_g , data = training)
 
-glm2 <- glm(delirium ~ log_albumin + inr_g2 + log_hb + log_crp  + 
-              log_wbc_max + oxygen_therapy_type1 + oxygen_therapy_type2 
+glm2 <- glm(delirium ~ albumin + inr_g2 + log_hb + log_crp  + 
+              log_wbc_max + oxygen_therapy_type
             + hr_g + cr_g + plt_g + ast_g + age_g , data = training, family = binomial())
+
+
+
+
+
+ct1 <- CreateTableOne(vars  = c(score.cont, score.fact), strata = "SHOCK"
+                      , data = training[training$delirium==1,]
+                      , factorVars = score.fact)
+print(ct1)
+print(ct1, nonnormal = conti.cov, standardize = T)
+
+lrm(delirium ~ oxygen_therapy_type, data = training)
+lrm(delirium ~ SHOCK, data = training)
+
+ct2 <- CreateTableOne(vars  = c(score.cont, score.fact), strata = "SHOCK"
+                      , data = training[training$delirium==0,]
+                      , factorVars = score.fact)
+
+print(ct2, nonnormal = conti.cov, standardize = T)
+
+par(mfrow = c(2,2))
+boxplot(albumin ~ SHOCK)
+boxplot(inr ~ SHOCK)
 
 
 
@@ -1383,8 +1345,20 @@ n2 <- nomogram(lrm2)
 plot(n2)
 
 
+# delete oxygen therapy type , albumin 
+lrm2 <- lrm(delirium ~  inr_g2 + log_hb + log_crp  + 
+              log_wbc_max + SHOCK
+            + hr_g + cr_g + plt_g + ast_g + age_g , data = training)
+lrm2
+glm2 <- glm(delirium ~ albumin + inr_g2 + log_hb + log_crp  + 
+              log_wbc_max + oxygen_therapy_type
+            + hr_g + cr_g + plt_g + ast_g + age_g , data = training, family = binomial())
+
+
+
+
 training$delirium
-training$log_albumin
+training$albumin
 training$inr_g2
 training$log_hb
 training$log_crp
@@ -1405,6 +1379,61 @@ roc(response = test$delirium, predictor = predict(glm1, newdata = test, type = "
 vif(glm1)
 plot(training$log_bun, log(training$creatinine))
 cor.test(training$log_bun, log(training$creatinine), method = "spearman")
+
+
+
+scoring.tr <- training[c("delirium", score.cont, score.fact)]
+names(scoring.tr)
+
+
+
+describe(albumin)
+
+lrm1 <- lrm(delirium~., data = scoring.tr)
+n1 <- nomogram(lrm1, albumin= seq(0, 6, 1))
+plot(n1)
+
+win.graph()
+par(mfrow = c(1,2))
+plot(n1, col.conf=c(1,.5,.2), naxes=11, fun=function(x)1/(1+exp(-x)),  # or fun=plogis
+     fun.at=c(.001,.01,.05,seq(.1,.9,by=.1),.95,.99,.999),
+     funlabel="Risk of Delirium")
+
+par(mfrow = c(1,2))
+boxplot(albumin ~ SHOCK)
+boxplot(albumin ~ oxygen_therapy_type)
+
+
+
+lrm1 <- lrm(delirium~ SHOCK/(oxygen_therapy_type + log_bun + log_crp + age_g + albumin + inr_g2+ast_g+plt_g
+                             +hr_g+log_wbc_max) , data = training)
+lrm1
+n1 <- nomogram(lrm1)
+plot(n1)
+
+
+glm1 <- glm(delirium~ SHOCK/(oxygen_therapy_type + log_bun + log_crp + age_g + albumin + inr_g2+plt_g
+                             +hr_g+log_wbc_max) , data = training, family = binomial)
+summary(glm1)
+
+test$interact.p <- predict(glm1, newdata = test, type = "response")
+
+library(pROC)
+with(test, roc(predictor = interact.p, response = delirium, ci =T))
+
+
+glm1 <- glm(delirium~ SHOCK/(oxygen_therapy_type+inr_g2 + log_wbc_max+log_crp + age_g) , data = training, family = binomial)
+summary(glm1)
+car::Anova(glm1, 3)
+
+
+glm2 <- glm(delirium~ SHOCK*(oxygen_therapy_type+log_wbc_max ) , data = training, family = binomial)
+summary(glm2)
+
+
+
+
+table(SHOCK, delirium, oxygen_therapy_type)
 
 
 
