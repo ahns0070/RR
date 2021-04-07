@@ -11,7 +11,7 @@ source("https://raw.githubusercontent.com/ahns0070/RR/edit.functionR/function.R"
 
 library(mi)
 
-setwd("e:/stat/prediction_yang")
+#setwd("e:/stat/prediction_yang")
 setwd("/Users/siha/Documents/ML")
 data0 <- read.csv("newdata.csv", na = c("", NA, '.'))
 dim(data0)
