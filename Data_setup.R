@@ -5,7 +5,7 @@
 
 
 #Read data.
-source("d:/r_program/function.r")
+#source("d:/r_program/function.r")
 
 source("https://raw.githubusercontent.com/ahns0070/RR/edit.functionR/function.R")
 
