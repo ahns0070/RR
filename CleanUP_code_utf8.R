@@ -190,28 +190,58 @@ inter1$plot()
 
 start.time3 <- proc.time()
 ale <- FeatureEffect$new(predictor, feature = "SHOCK")
+par(mfrow=c(3,3))
 ale$plot()
 end.time3 <- proc.time()
 end.time3 - start.time3
-ale$set.feature("albumin")
+ale$set.feature("SHOCK")
 ale$plot()
 
 
 
 start.time4 <- proc.time()
-interact <- Interaction$new(predictor, feature = "oxygen_therapy_type1")
-plot(interact)
+interact4 <- Interaction$new(predictor, feature = "oxygen_therapy_type1")
+plot(interact4)
 end.time4 <- proc.time()
 end.time4 - start.time4
 
 
 start.time5 <- proc.time()
-interact2 <- Interaction$new(predictor, feature = "oxygen_therapy_type1")
-plot(interact)
+interact5 <- Interaction$new(predictor, feature = "oxygen_therapy_type2")
+plot(interact5)
 end.time5 <- proc.time()
 end.time5 - start.time5
 
 
+start.time6 <- proc.time()
+interact6 <- Interaction$new(predictor, feature = "SHOCK")
+plot(interact6)
+end.time6 <- proc.time()
+end.time6 - start.time6
+
+
+
+start.time7 <- proc.time()
+interact7 <- Interaction$new(predictor, feature = "inr")
+plot(interact7)
+end.time7 <- proc.time()
+end.time7 - start.time7
+
+
+
+start.time8 <- proc.time()
+interact8 <- Interaction$new(predictor, feature = "CNS_ds_y_n")
+plot(interact8)
+end.time8 <- proc.time()
+end.time8 - start.time8
+
+
+
+start.time9 <- proc.time()
+interact9 <- Interaction$new(predictor, feature = "creatinine")
+plot(interact9)
+end.time9 <- proc.time()
+end.time9 - start.time9
 effs <- FeatureEffects$new(predictor)
 plot(effs)
 
