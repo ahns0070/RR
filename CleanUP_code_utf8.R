@@ -11,10 +11,6 @@ print(ct1, noSpaces=F, smd=F, showAllLevels = T, quote = T, oveall = T)
 psych::describe(data1[contiVars1],quant=c(.25,.75) ) 
 
 
-
-
-
-
 training2$delirium
 
 trainTransformed$delirium
@@ -89,12 +85,12 @@ jj
 
 
 
-install.packages('iml')
+#install.packages('iml')
 library(iml)
 library(pre)
 
 #pre - interaction effect evaluation
-install.packages('pre')
+#install.packages('pre')
 library(pre)
 
 set.seed(1322)
@@ -119,15 +115,9 @@ set.seed(344); rf <- randomForest(formula0, data = training, ntree = 50)
 rf.select.model
 
 
-X <- training[c(conti.cov[-c(9,10)], factor.cov, "log_wbc_max")]
+#X <- training[c(conti.cov[-c(11,13)], factor.cov, "log_wbc_max")] #delete wbc_min & hematocrit.
 
-#
-install.packages('dplyr')
-library(dplyr)
-tr4iml <- trainTransformed2[index[,1],]
-dim(tr4iml)
-library(iml)
-predictor <- Predictor$new(rf.select.model, data = tr4iml, y = "delirium", type="prob")
+
 
 head(tr4iml)
 
@@ -135,12 +125,14 @@ head(tr4iml)
 #or a function. See Details for allowed losses.
 
 formula0 <- formula(delirium2 ~ albumin + inr + hemoglobin + c_reactive_protein + bun
-                    + log_wbc_max + oxygen_therapy_type1 + oxygen_therapy_type2 + heart_rate + creatinine + platelet + ast
-                    + SHOCK + age + sex + vasoactive_drug + dementia + cardiac_arrest_before_icu + CNS_ds_y_n)
+                    + wbc_max + oxygen_therapy_type1 + oxygen_therapy_type2 + heart_rate 
+                    + creatinine + platelet + ast
+                    + SHOCK + age + sex + vasoactive_drug + dementia + cardiac_arrest_before_icu 
+                    + CNS_ds_y_n)
 
 
 #Addtional Feature selection using RF- ok
-
+library(caret)
 rf.ctrl <- trainControl ( method = "cv"
                           , number = 10
                           , savePredictions = T
@@ -153,6 +145,7 @@ rf.ctrl <- trainControl ( method = "cv"
 #Random Forest
 
 training$log_wbc_max <- log(training$wbc_max)
+
 start.t <- proc.time()
 set.seed(1231)
 rf.select.model <- train(form = formula0, data = training, method = "rf"
@@ -169,19 +162,31 @@ varImp(rf.select.model)
 plot(varImp(rf.select.model))
 
 
-start.time2 <- proc.time()
-imp <- FeatureImp$new(predictor, loss = "ce")
-end.time2 <- proc.time()
-end.time2 - start.time2
+
+#install.packages('dplyr')
+library(dplyr)
+tr4iml <- trainTransformed2
+dim(tr4iml)
+
+library(iml)
+predictor <- Predictor$new(rf.select.model, data = tr4iml, y = "delirium", type="prob")
+start.time1 <- proc.time()
+imp <- FeatureImp$new(predictor, loss = "ce", n.repetitions = 100, compare = "difference")
+end.time1 <- proc.time()
+end.time1 - start.time1
 
 library("ggplot2")
 plot(imp)
 
 #Interaction effect.
-start.time <- proc.time()
-Interaction$new(predictor)
-end.time <- proc.time()
-end.time - start.time
+start.time2 <- proc.time()
+inter1 <- Interaction$new(predictor, grid.size = 2)
+end.time2 <- proc.time()
+end.time2 - start.time2
+inter1
+plot(inter1)
+inter1$results
+inter1$plot()
 
 start.time3 <- proc.time()
 ale <- FeatureEffect$new(predictor, feature = "SHOCK")
@@ -198,6 +203,13 @@ interact <- Interaction$new(predictor, feature = "oxygen_therapy_type1")
 plot(interact)
 end.time4 <- proc.time()
 end.time4 - start.time4
+
+
+start.time5 <- proc.time()
+interact2 <- Interaction$new(predictor, feature = "oxygen_therapy_type1")
+plot(interact)
+end.time5 <- proc.time()
+end.time5 - start.time5
 
 
 effs <- FeatureEffects$new(predictor)
