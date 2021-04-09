@@ -18,10 +18,10 @@ dim(data0)
 
 data0$delirium2 = factor(ifelse(data0$delirium == 1, "yes", "no"))
 
-with(data0, plot(wbc_max, wbc_min))
-with(data0, cor.test(wbc_max, wbc_min))
-with(data0, boxplot(wbc_max~ delirium ))
-with(data0, boxplot(wbc_min~ delirium ))
+#with(data0, plot(wbc_max, wbc_min))
+#with(data0, cor.test(wbc_max, wbc_min))
+#with(data0, boxplot(wbc_max~ delirium ))
+#with(data0, boxplot(wbc_min~ delirium ))
 
 
 #Variables name list up
@@ -130,14 +130,14 @@ names(data1.temp)
 dim(data1.temp)
 
 library(gdata)
-is.what(data1.temp)
+#is.what(data1.temp)
 
 names(as.data.frame(data1.temp))
 
 data1 <- data.frame(data1, data.frame(data1.temp))
 names(data1) <- sub("\\.", replacement ="",  names(data1)) #delete "." in variable name.
-names(data1)
-names(data1)
+#names(data1)
+#names(data1)
 
 multi.vars
 #renewing categorical variable list up.
@@ -161,12 +161,12 @@ factor.cov <- c(
 )
 
 data2 <- data1[, c(conti.cov, factor.cov, "delirium", "delirium2")]
-head(data2)
-sum(is.na(data0$rhythm))
+#head(data2)
+#sum(is.na(data0$rhythm))
 
-dim(data0)
-dim(data1)
-dim(data2)
+#dim(data0)
+#dim(data1)
+#dim(data2)
 
 
 
