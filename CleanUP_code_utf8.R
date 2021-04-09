@@ -449,7 +449,7 @@ interact.f1 <- formula(delirium2 ~ SHOCK*(albumin + bun+inr + heart_rate+ age+ h
 training$log_wbc_max <- log(training$wbc_max)
 start.t <- proc.time()
 set.seed(1231)
-rf.select.model <- train(form = interact.f1, data = training, method = "rf"
+rf.inter.model <- train(form = interact.f1, data = training, method = "rf"
                          , metric = "ROC"
                          , trControl = rf.ctrl
                          , preProcess = c("center", "scale")
@@ -457,12 +457,12 @@ rf.select.model <- train(form = interact.f1, data = training, method = "rf"
 end.t <- proc.time()
 end.t - start.t
 
-rf.select.model
-getTrainPerf(rf.select.model)
-varImp(rf.select.model)
-plot(varImp(rf.select.model))
+rf.inter.model
+getTrainPerf(rf.inter.model)
+varImp(rf.inter.model)
+plot(varImp(rf.inter.model))
 
-str(rf.select.model)
+str(rf.inter.model)
 
 
 ## preprocess randomforest- ok
