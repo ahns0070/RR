@@ -1,8 +1,6 @@
 
 source("https://raw.githubusercontent.com/ahns0070/RR/prediction_code/Data_setup.R")
 
-
-
 library(tableone)
 
 ct1 <- CreateTableOne(vars=c(factorVars1), data=data1, factorVars=factorVars1, includeNA = T)
